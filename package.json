@@ -1,0 +1,9 @@
+{
+  "name": "bytes",
+  "version": "1.0.0",
+  "description": "Convert to bytes or represent bytes in a readable way",
+  "install": "install -b bytes-bash.sh ${PREFIX:-/usr/local}/bin/bytes-bash",
+  "scripts": [
+    "bytes.bash"
+  ]
+}
