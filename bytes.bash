@@ -122,10 +122,16 @@ formatBytes() {
 		fi
 	done
 
-	convertedValue="$(bc <<<"scale=${decimalPlaces}; $value / ${units[$unit]}")"
+	# Use 0 decimal places for bytes, otherwise use the provided value
+	local displayDecimalPlaces="$decimalPlaces"
+	if [[ "$unit" == "b" ]]; then
+		displayDecimalPlaces=0
+	fi
+
+	convertedValue="$(bc <<<"scale=${displayDecimalPlaces}; $value / ${units[$unit]}")"
 	suffix="$(toUppercase "$unit")"
 
-	printf "%'0.*f %s\n" "$decimalPlaces" "$convertedValue" "$suffix"
+	printf "%'0.*f %s\n" "$displayDecimalPlaces" "$convertedValue" "$suffix"
 }
 
 ##
