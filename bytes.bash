@@ -3,7 +3,7 @@
 [[ "${DEBUG-}" ]] && set -eu -o pipefail
 [[ "${TRACE-}" ]] && set -x
 
-declare -r VERSION="1.0.1"
+declare -r VERSION="2.0.0"
 
 # List of known units and conversion rates
 declare -Ar units=(
@@ -77,10 +77,10 @@ showUsage() {
 		  # » 194.85 MB
 
 		  Read from stdin:
-		  $ ls -l ~/Downloads/menu2.mov | awk '{ print \$5 }' | ./bytes.bash -
+		  $ ls -l ~/Downloads/menu2.mov | awk '{ print \$5 }' | ./bytes.bash
 		  # » 34.06 MB
 
-		  $ bytes 32 mib | bytes -
+		  $ bytes 32 mib | bytes
 		  # » 33.55 MB
 	END
 }
@@ -92,6 +92,12 @@ arrayJoin() {
 	local IFS="$1"
 	shift
 	echo "$*"
+}
+
+has_stdin_data() {
+	# Check if stdin (file descriptor 0) is not a terminal
+	# That means we have data being piped or redirected
+	[[ ! -t 0 ]]
 }
 
 toLowercase() {
@@ -124,7 +130,7 @@ formatBytes() {
 
 	# Use 0 decimal places for bytes, otherwise use the provided value
 	local displayDecimalPlaces="$decimalPlaces"
-	if [[ "$unit" == "b" ]]; then
+	if [[ $unit == "b" ]]; then
 		displayDecimalPlaces=0
 	fi
 
@@ -177,17 +183,16 @@ bytes() {
 		esac
 	done
 
+	if has_stdin_data; then
+		read -r pipedInput </dev/stdin
+		input="${input} ${pipedInput}"
+	fi
+
 	input="$(toLowercase "${input-}")"
 
 	if [[ $input == '' ]]; then
-		# Exit with usage message if still no input
 		showUsage
 		return 1
-	fi
-
-	# Read from stdin
-	if [[ ${input# } == '-' ]]; then
-		read -r input </dev/stdin
 	fi
 
 	local -r numberRegex='(-?[0-9]+\.?[0-9]*) *'
@@ -202,7 +207,7 @@ bytes() {
 		local -r value="${BASH_REMATCH[1]}"
 		formatBytes "$value" "${decimalPlaces:-2}"
 	else
-		abort 'could not parse value as bytes'
+		abort "could not parse value: $input"
 	fi
 }
 
