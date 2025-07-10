@@ -98,7 +98,7 @@ arrayJoin() {
 	echo "$*"
 }
 
-has_stdin_data() {
+hasPipedInput() {
 	# Check if stdin (file descriptor 0) is not a terminal
 	# That means we have data being piped or redirected
 	[[ ! -t 0 ]]
@@ -208,7 +208,7 @@ bytes() {
 		esac
 	done
 
-	if has_stdin_data; then
+	if hasPipedInput; then
 		read -r pipedInput </dev/stdin
 		input="${input} ${pipedInput}"
 	fi
