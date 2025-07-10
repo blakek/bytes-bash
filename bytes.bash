@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-[[ "${DEBUG:-}" ]] && set -eu -o pipefail
-[[ "${TRACE:-}" ]] && set -x
+[[ "${DEBUG-}" ]] && set -eu -o pipefail
+[[ "${TRACE-}" ]] && set -x
 
-declare -r VERSION="1.0.0"
+declare -r VERSION="1.0.1"
 
 # List of known units and conversion rates
 declare -Ar units=(
@@ -37,41 +37,51 @@ declare -Ar units=(
 )
 
 abort() {
-	message="${1:-}"
+	message="${1-}"
 	printf 'Error: %s\n' "$message" >&2
 	exit 1
 }
 
+bold() {
+	printf '\033[1m%s\033[0m\n' "$*"
+}
+
+italic() {
+	printf '\033[3m%s\033[0m\n' "$*"
+}
+
 showUsage() {
 	cat <<-END
-		Convert to bytes or represent bytes in a readable way
+		$(italic "Convert between human-readable sizes and raw byte values")
 
-		Usage:
-		    bytes [options] [value]
+		$(bold USAGE)
+		  bytes [options] [value]
 
-		Options:
-		    -d, --decimal-places  how many digits past the decimal place to show
-		    -h, --help            output usage information and exit
-		    -l, --list-units      list known units and name alternatives for conversion
-		    -V, --version         output the version number and exit
+		$(bold OPTIONS)
+		  -d, --decimal-places  how many digits past the decimal place to show
+		  -h, --help            output usage information and exit
+		  -l, --list-units      list known units and name alternatives for conversion
+		  -V, --version         output the version number and exit
 
-		Examples:
-		    Convert 25 GB to bytes:
-		      bytes 25 GB
-		      ...or: bytes 25gb
-		      ...or: bytes 25 gigabytes (see --list-units)
-		      # => 25000000000
+		$(bold EXAMPLES)
+		  Convert 25 GB to bytes:
+		  $ bytes 25 GB
+		  # » 25000000000
 
-		    Convert 194853247 to a readable format:
-		      bytes 194853247
-		      # 194.85 MB
+		  There's aliases for units. Use --list-units to see them all.
+		  $ bytes 25gb # » 25000000000
+		  $ bytes 25 gigabytes # » 25000000000
 
-		    Read from stdin:
-		      ls -l ~/Downloads/menu2.mov | awk '{ print \$5 }' | ./bytes.bash -
-		      # 34.06 MB
+		  Convert 194853247 to a readable format:
+		  $ bytes 194853247
+		  # » 194.85 MB
 
-		      bytes 32 mib | bytes -
-		      # 33.55 MB
+		  Read from stdin:
+		  $ ls -l ~/Downloads/menu2.mov | awk '{ print \$5 }' | ./bytes.bash -
+		  # » 34.06 MB
+
+		  $ bytes 32 mib | bytes -
+		  # » 33.55 MB
 	END
 }
 
@@ -156,12 +166,12 @@ bytes() {
 				return 0
 				;;
 			*)
-				input="${input:-} ${opt}"
+				input="${input-} ${opt}"
 				;;
 		esac
 	done
 
-	input="$(toLowercase "${input:-}")"
+	input="$(toLowercase "${input-}")"
 
 	if [[ $input == '' ]]; then
 		# Exit with usage message if still no input
