@@ -165,7 +165,7 @@ bytes() {
 				shift
 				decimalPlaces=$(($1))
 				;;
-			-h | --help)
+			-h | --help | help)
 				showUsage
 				return 0
 				;;
