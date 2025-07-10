@@ -6,35 +6,17 @@ Use this script to convert to bytes or to display bytes in a readable way.
 
 ## Install
 
-There are a few options for installation:
-
-1. This can be installed as a [bpkg](http://www.bpkg.sh/):
-
-**Install globally:**
+A simple Makefile is provided to install and uninstall the script.
 
 ```bash
-bpkg install -g blakek/bytes-bash
-```
-
-**Install as a dependency:**
-
-```bash
-bpkg install blakek/bytes-bash
-```
-
-2. You can install this using Homebrew:
-
-```bash
-brew install blakek/blakek/bytes-bash
-```
-
-3. Install from source:
-
-- Either [clone this repository](https://help.github.com/articles/cloning-a-repository/) or [download the ZIP file](https://github.com/blakek/bytes-bash/archive/master.zip)
-- Build from the Makefile:
-
-```bash
+# Install to /usr/local/bin (default PREFIX)
 make install
+
+# Install to a custom directory
+make install PREFIX=$HOME/.local
+
+# Uninstall
+make uninstall
 ```
 
 ## Usage
