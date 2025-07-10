@@ -6,35 +6,39 @@
 declare -r VERSION="2.0.0"
 
 # List of known units and conversion rates
-declare -Ar units=(
-	['b']=1
+declare -A units=(
 	['byte']=1
-	['k']=1000
-	['kb']=1000
-	['kilobyte']=1000
-	['kib']=$((2 ** 10))
+	['kilobyte']=$((10 ** 3))
+	['megabyte']=$((10 ** 6))
+	['gigabyte']=$((10 ** 9))
+	['terabyte']=$((10 ** 12))
+	['petabyte']=$((10 ** 15))
+
 	['kibibyte']=$((2 ** 10))
-	['m']=$((1000 ** 2))
-	['mb']=$((1000 ** 2))
-	['megabyte']=$((1000 ** 2))
-	['mib']=$((2 ** 20))
 	['mebibyte']=$((2 ** 20))
-	['g']=$((1000 ** 3))
-	['gb']=$((1000 ** 3))
-	['gigabyte']=$((1000 ** 3))
-	['gib']=$((2 ** 30))
 	['gibibyte']=$((2 ** 30))
-	['t']=$((1000 ** 4))
-	['tb']=$((1000 ** 4))
-	['terabyte']=$((1000 ** 4))
-	['tib']=$((2 ** 40))
 	['tebibyte']=$((2 ** 40))
-	['p']=$((1000 ** 5))
-	['pb']=$((1000 ** 5))
-	['petabyte']=$((1000 ** 5))
-	['pib']=$((2 ** 50))
 	['pebibytes']=$((2 ** 50))
 )
+
+# Aliases
+units['b']="${units['byte']}"
+units['k']="${units['kilobyte']}"
+units['kb']="${units['kilobyte']}"
+units['m']="${units['megabyte']}"
+units['mb']="${units['megabyte']}"
+units['g']="${units['gigabyte']}"
+units['gb']="${units['gigabyte']}"
+units['t']="${units['terabyte']}"
+units['tb']="${units['terabyte']}"
+units['p']="${units['petabyte']}"
+units['pb']="${units['petabyte']}"
+
+units['kib']="${units['kibibyte']}"
+units['mib']="${units['mebibyte']}"
+units['gib']="${units['gibibyte']}"
+units['tib']="${units['tebibyte']}"
+units['pib']="${units['pebibytes']}"
 
 abort() {
 	message="${1-}"
