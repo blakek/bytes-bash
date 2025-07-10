@@ -145,6 +145,27 @@ formatBytes() {
 }
 
 ##
+# Tests if a unit is a known unit
+##
+isKnownUnit() {
+	local -r unit="$1"
+	if [[ -n ${units[$unit]+_} ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+##
+# List known units in a human-friendly way
+##
+listUnits() {
+	for unit in "${!units[@]}"; do
+		printf "%-10s %s\n" "$unit" "${units[$unit]}"
+	done | sort -k2 -n
+}
+
+##
 # Parse a string and return bytes
 ##
 parseBytes() {
@@ -174,7 +195,7 @@ bytes() {
 				return 0
 				;;
 			-l | --list-units)
-				echo "${!units[@]}"
+				listUnits
 				return 0
 				;;
 			-V | --version)
