@@ -237,7 +237,8 @@ bytes() {
 }
 
 if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
-	export -f bytes
+	export -f bytes formatBytes isKnownUnit listUnits parseBytes showUsage
+	export VERSION
 else
 	bytes "${@}"
 	exit $?
